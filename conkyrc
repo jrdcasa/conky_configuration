@@ -1,0 +1,134 @@
+-- vim: ts=4 sw=4 noet ai cindent syntax=lua
+
+conky.config = {
+    use_xft = true,
+    xftalpha = 0.8,
+    update_interval = 1.0,
+    total_run_times = 0,
+    own_window = true,
+    own_window_transparent = true,
+    own_window_argb_visual = true,
+    own_window_type = 'normal',
+    own_window_class = 'conky-semi',
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+    background = true,
+    double_buffer = true,
+    imlib_cache_size = 0,
+    no_buffers = true,
+    uppercase = false,
+    cpu_avg_samples = 2,
+    override_utf8_locale = true,
+
+    -- placement
+    alignment = 'top_left',
+    gap_x = 40,
+    gap_y = 25,
+
+    -- default drawing
+    draw_shades = false,
+    draw_outline = false,
+    draw_borders = false,
+    draw_graph_borders = true,
+    default_bar_width = 150, default_bar_height = 5,
+    default_graph_width = 150, default_graph_height = 12,
+    default_gauge_width = 20, default_gauge_height = 20,
+
+    -- colors
+    font = 'Liberation Mono:size=10',
+    default_color = 'EEEEEE',
+    color1 = 'AABBFF',
+    color2 = 'FF993D',
+    color3 = 'AAAAAA',
+
+    -- Dimensions
+    maximum_width = 440,
+
+    -- layouting
+    template0 = [[${font Liberation Sans:bold:size=11}${color2}\1 ${color3}${hr 2}${font}]],
+    template1 = [[${color1}\1]],
+    template2 = [[${goto 130}${color}]],
+    template3 = [[${goto 180}${color}${alignr}]],
+    template4 = [[${goto 250}${color1}\1]],
+};
+
+
+conky.text = [[
+#INFO
+${template0 Info}
+${template1 Date}                                               ${template3}${color3}${time %a,}${color}${time %e %B %G}
+${template1 Time}                                               ${template3}${time %T}
+${template1 TimeUTC}                                            ${template3}${tztime US/Eastern %T}
+
+#SYSTEM
+${template0 System}
+${template1 Hostname}                                           ${template3}${nodename}
+${template1 OS}                                                 ${template3}${alignr}${exec cat /etc/issue.net}
+${template1 ${sysname}}                                         ${template3}${kernel}-${machine}
+${template1 Uptime}                                             ${template3}${uptime_short}
+${template1 CPU\ Freq}                                          ${template3}${freq_g}GHz
+${template1 CPU\ Temperature}                                   ${template3}${acpitemp}°C
+${template1 HDD\ Temperature} (/)                               ${template3}${exec sudo smartctl -a /dev/nvme0n1p2 | egrep Temperature: | awk '{print $2}'}°C
+${template1 HDD\ Temperature} (/home)                           ${template3}${exec sudo smartctl -a /dev/nvme1n1p1 | egrep Temperature: | awk '{print $2}'}°C
+
+#PROCESSORS (for hwmon: /sys/devices/platform/coretemp.0/hwmon/hwmon4/temp4_label)
+${template0 Processors}
+${template1 Core\ 0} (${hwmon 4 temp 2}ºC) ${template2}${cpu cpu1}%        ${template3}${cpubar cpu1}
+${template1 Core\ 1} (${hwmon 4 temp 3}ºC) ${template2}${cpu cpu2}%        ${template3}${cpubar cpu2}
+${template1 Core\ 2} (${hwmon 4 temp 4}ºC) ${template2}${cpu cpu3}%        ${template3}${cpubar cpu3}
+${template1 Core\ 3} (${hwmon 4 temp 5}ºC) ${template2}${cpu cpu4}%        ${template3}${cpubar cpu4}
+${template1 Core\ 4} (${hwmon 4 temp 6}ºC) ${template2}${cpu cpu5}%        ${template3}${cpubar cpu5}
+${template1 Core\ 5} (${hwmon 4 temp 7}ºC) ${template2}${cpu cpu6}%        ${template3}${cpubar cpu6}
+${template1 Top-1}     ${template2}${top name 1}       
+${template1 Top-2}     ${template2}${top name 2}       
+${template1 Top-3}     ${template2}${top name 3}     
+
+${template0 Memory}
+${template1 Memory}             ${template2}${memperc}% used    ${template3}${mem} / ${memmax}
+                                                                ${template3}${membar}
+${template1 Top}                ${template2}${top_mem name 1}   ${template3}${top_mem mem_vsize 1} 
+
+${template0 Filesystem}
+${template1 /}                ${template2}${fs_free /} free               ${template3}${fs_used /} / ${fs_size /}
+${template2}${fs_free_perc /}% free                                       ${template3}${fs_bar /}
+${template1 /home/}           ${template2}${fs_free /home/jramos} free    ${template3}${fs_used /home/jramos} / ${fs_size /home/jramos}
+${template2}${fs_free_perc /home/jramos}% free                            ${template3}${fs_bar /home/jramos}
+${if_mounted /media/jramos/My_Passport}
+${template1 MyPassport}                ${template2}${fs_free /media/jramos/My_Passport} free               ${template3}${fs_used /media/jramos/My_Passport} / ${fs_size /media/jramos/My_Passport}
+${template2}${fs_free_perc /media/jramos/My_Passport}% free                            ${template3}${fs_bar /media/jramos/My_Passport}
+${endif}\
+${if_mounted /media/jramos/TOSHIBA_VID}
+${template1 TOSHIBA_VID}                ${template2}${fs_free /media/jramos/TOSHIBA_VID} free               ${template3}${fs_used /media/jramos/TOSHIBA_VID} / ${fs_size /media/jramos/TOSHIBA_VID}
+${template2}${fs_free_perc /media/jramos/TOSHIBA_VID}% free                            ${template3}${fs_bar /media/jramos/TOSHIBA_VID}
+${endif}\
+${if_mounted /media/jramos/Elements}
+${template1 Elements}                ${template2}${fs_free /media/jramos/Elements} free               ${template3}${fs_used /media/jramos/Elements} / ${fs_size /media/jramos/Elements}
+${template2}${fs_free_perc /media/jramos/Elements}% free                            ${template3}${fs_bar /media/jramos/Elements}
+${endif}\
+
+${template1 IO\ Read}           ${template2}${diskio_read}                  ${template3}${diskiograph_read}
+${template1 IO\ Write}          ${template2}$diskio_write                   ${template3}$diskiograph_write
+${template1 Top}                ${template2}${top_io name 1}                ${template3}${top_io io_perc 1}%
+
+${template0 Networking}
+${if_existing /proc/net/route wlo1}\
+${template1 IP}                                                              ${template3}${addr wlo1}
+${template1 AP}                                                              ${template3}${wireless_essid wlo1}
+${template1 Signal}             ${template2}${wireless_link_qual_perc wlo1}  ${template3}${wireless_link_bar wlo1}
+${template1 Download}           ${template2}${downspeed wlo1}                ${template3}${downspeedgraph wlo1}
+${template1 Upload}             ${template2}${upspeed wlo1}                  ${template3}${upspeedgraph wlo1}
+${template1 Total_Down/Up}                                                   ${template3}${totaldown wlo1}↓ / ${totalup wlo1}↑
+${else}${if_existing /proc/net/route enp4s0}\
+${template1 Ip}                                                             ${template3}${addr enp4s0}
+${template1 Download}           ${template2}${downspeed enp4s0}             ${template3}${downspeedgraph enp4s0}
+${template1 Upload}             ${template2}${upspeed enp4s0}               ${template3}${upspeedgraph enp4s0}
+${template1 Total_Down/Up}                                                  ${template3}${totaldown enp4s0}↓ / ${totalup enp4s0}↑
+${endif}${endif}\
+
+${template0 Battery}
+${template1 Load} ${template2}${battery_percent BAT0}% ${alignr}${template3}${battery_bar 8,70 BAT0}
+${battery_time BAT0}
+${template0 NvidiaGPU}
+${template1 GPU_util} ${template2}${nvidia gpuutil}% ${template4 GPU_mem} ${template3}${nvidia membwutil}%
+${template1 GPU_video} ${template2}${nvidia videoutil}% ${template4 GPU_temp} ${template3}${nvidia temp}ºC
+
+]] 
